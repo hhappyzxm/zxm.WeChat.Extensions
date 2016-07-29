@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using zxm.WeChat.Extensions.Models;
+using zxm.AsyncLock;
 
 namespace zxm.WeChat.Extensions
 {
@@ -13,13 +15,14 @@ namespace zxm.WeChat.Extensions
     /// </summary>
     public class ApiHelper
     {
-        private readonly object _lock = new object();
+        private readonly Locker _lock = new Locker();
+   
         private AccessToken _accessToken;
 
         /// <summary>
         /// Constructor of ApiHelper
         /// </summary>
-        private ApiHelper(string appId, string appSecret)
+        public ApiHelper(string appId, string appSecret)
         {
             if (string.IsNullOrEmpty(appId))
             {
@@ -45,18 +48,23 @@ namespace zxm.WeChat.Extensions
         /// </summary>
         public string AppSecret { get; }
 
-        private AccessToken GetAccessToken()
+        /// <summary>
+        /// Get access token
+        /// </summary>
+        /// <returns></returns>
+        public async Task<AccessToken>  GetAccessToken()
         {
-            lock (_lock)
+            using (var releaser = await _lock.LockAsync())
             {
                 if (_accessToken == null || _accessToken.NeedRefreshToken())
                 {
                     using (var httpClient = new HttpClient())
                     {
                         var url = $"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={AppId}&secret={AppSecret}";
-                        var resString = httpClient.GetStringAsync(url);
-                     //   var responseObj = new JsonConverter
-                     var a = new Dictionary<string, string>().ToList();
+                        var responseStr = await httpClient.GetStringAsync(url);
+                        //   var responseObj = new JsonConverter
+                        // JsonConvert.DeserializeAnonymousType(responseStr, )
+                        var a = new Dictionary<string, string>().ToList();
                     }
                 }
 

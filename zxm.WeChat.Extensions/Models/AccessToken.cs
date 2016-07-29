@@ -36,14 +36,14 @@ namespace zxm.WeChat.Extensions.Models
         public string Token { get; set; }
 
         /// <summary>
-        /// Got access token time
-        /// </summary>
-        public DateTime GotTime { get; set; }
-
-        /// <summary>
         /// Expires in seconds
         /// </summary>
         public int ExpiresIn { get; set; }
+
+        /// <summary>
+        /// Got access token time
+        /// </summary>
+        public DateTime GotTime { get; set; }
 
         /// <summary>
         /// Because of the token from WeChat has expiry time, so we need to check whether the token is expired.

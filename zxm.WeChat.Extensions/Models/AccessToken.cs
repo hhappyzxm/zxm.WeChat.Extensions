@@ -1,9 +1,12 @@
 ﻿using System;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace zxm.WeChat.Extensions.Models
 {
     /// <summary>
     /// AccessToken
+    /// Example:{"access_token":"RWR-bozRjozxfnb2muGzPDrp-ZhMQCXWnlDXqCda5VQRCgh1fCRKlXRAmXcOJk_1E8ebfZF-qTv_78AaFzS55BAeXG9eJsggNGtW3En96a6wW-IoAGF5m3Ufwx4-bqYOBGNhAAAEJQ","expires_in":7200}
     /// </summary>
     public class AccessToken
     {
@@ -12,6 +15,7 @@ namespace zxm.WeChat.Extensions.Models
         /// </summary>
         /// <param name="token"></param>
         /// <param name="expiresIn"></param>
+        [JsonConstructor]
         public AccessToken(string token, int expiresIn):this(token, expiresIn, DateTime.Now)
         {
             
@@ -33,11 +37,13 @@ namespace zxm.WeChat.Extensions.Models
         /// <summary>
         /// Token
         /// </summary>
+        [JsonProperty("access_token")]
         public string Token { get; set; }
 
         /// <summary>
         /// Expires in seconds
         /// </summary>
+        [JsonProperty("expires_in")]
         public int ExpiresIn { get; set; }
 
         /// <summary>

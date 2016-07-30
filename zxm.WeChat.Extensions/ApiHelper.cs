@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using zxm.WeChat.Extensions.Models;
 using zxm.AsyncLock;
@@ -61,10 +62,12 @@ namespace zxm.WeChat.Extensions
                     using (var httpClient = new HttpClient())
                     {
                         var url = $"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={AppId}&secret={AppSecret}";
-                        var responseStr = await httpClient.GetStringAsync(url);
-                        //   var responseObj = new JsonConverter
-                        // JsonConvert.DeserializeAnonymousType(responseStr, )
-                        var a = new Dictionary<string, string>().ToList();
+                        var jsonString = await httpClient.GetStringAsync(url);
+
+                        if (!TryCatchError(jsonString))
+                        {
+                            _accessToken = JsonConvert.DeserializeObject<AccessToken>(jsonString);
+                        }
                     }
                 }
 
@@ -72,21 +75,17 @@ namespace zxm.WeChat.Extensions
             }
         }
 
-        private bool TryCatchError(IDictionary<string, string> data, out ErrorResult result)
+        private bool TryCatchError(string jsonString)
         {
-            string errCode;
-            if(data.TryGetValue("errcode", out errCode))
+            try
             {
-                string errMessage;
-                if (data.TryGetValue("errmsg", out errMessage))
-                {
-                    result = new ErrorResult(errCode, errMessage);
-                    return true;
-                }
+                var err = JsonConvert.DeserializeObject<ErrorResult>(jsonString);
+                throw new ApiException($"{err.Code}-{err.Message}");
             }
-
-            result = null;
-            return false;
+            catch (ArgumentNullException)
+            {
+                return false;
+            }
         }
     }
 }

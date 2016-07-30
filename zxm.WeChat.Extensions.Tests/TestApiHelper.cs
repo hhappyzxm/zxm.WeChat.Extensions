@@ -16,8 +16,10 @@ namespace zxm.WeChat.Extensions.Tests
         public async Task TestGetAccessToken()
         {
             var apiHelper = new ApiHelper(_appId, _secret);
+            await apiHelper.GetAccessToken();
 
-            var token = await apiHelper.GetAccessToken();
+            apiHelper = new ApiHelper(_appId, "1111");
+            await Assert.ThrowsAsync<ApiException>(async () => await apiHelper.GetAccessToken());
         }
     }
 }

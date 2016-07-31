@@ -16,22 +16,16 @@ namespace zxm.WeChat.Extensions.Models
         /// <param name="token"></param>
         /// <param name="expiresIn"></param>
         [JsonConstructor]
-        public AccessToken(string token, int expiresIn):this(token, expiresIn, DateTime.Now)
+        public AccessToken(string token, int expiresIn)
         {
-            
-        }
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
 
-        /// <summary>
-        /// Constructor of AccessToken
-        /// </summary>
-        /// <param name="token"></param>
-        /// <param name="expiresIn"></param>
-        /// <param name="gotTime"></param>
-        public AccessToken(string token, int expiresIn, DateTime gotTime)
-        {
             Token = token;
             ExpiresIn = expiresIn;
-            GotTime = gotTime;
+            GotTime = DateTime.Now;
         }
 
         /// <summary>

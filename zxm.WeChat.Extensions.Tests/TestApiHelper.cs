@@ -21,5 +21,12 @@ namespace zxm.WeChat.Extensions.Tests
             apiHelper = new ApiHelper(_appId, "1111");
             await Assert.ThrowsAsync<ApiException>(async () => await apiHelper.GetAccessToken());
         }
+
+        [Fact]
+        public async Task TestGetJsApiTicket()
+        {
+            var apiHelper = new ApiHelper(_appId, _secret);
+            await apiHelper.GetJsApiTicket();
+        }
     }
 }

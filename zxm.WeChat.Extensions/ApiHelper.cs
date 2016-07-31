@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using zxm.WeChat.Extensions.Models;
 using zxm.AsyncLock;
 
@@ -16,9 +12,11 @@ namespace zxm.WeChat.Extensions
     /// </summary>
     public class ApiHelper
     {
-        private readonly Locker _lock = new Locker();
-   
+        private readonly Locker _accessTokenLock = new Locker();
+        private readonly Locker _jsApiTicketLock = new Locker();
         private AccessToken _accessToken;
+        private JsApiTicket _jsApiTicket;
+
 
         /// <summary>
         /// Constructor of ApiHelper
@@ -55,7 +53,7 @@ namespace zxm.WeChat.Extensions
         /// <returns></returns>
         public async Task<AccessToken>  GetAccessToken()
         {
-            using (var releaser = await _lock.LockAsync())
+            using (var releaser = await _accessTokenLock.LockAsync())
             {
                 if (_accessToken == null || _accessToken.NeedRefreshToken())
                 {
@@ -75,6 +73,43 @@ namespace zxm.WeChat.Extensions
             }
         }
 
+        /// <summary>
+        /// Get JsApiTicket
+        /// </summary>
+        /// <returns></returns>
+        public async Task<JsApiTicket> GetJsApiTicket()
+        {
+            using (var releaser = await _jsApiTicketLock.LockAsync())
+            {
+                if (_jsApiTicket == null || _jsApiTicket.NeedRefreshToken())
+                {
+                    using (var httpClient = new HttpClient())
+                    {
+                        
+                        var url = $"https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={GetAccessToken()}&type=jsapi";
+                        var jsonString = await httpClient.GetStringAsync(url);
+
+                        if (!TryCatchError(jsonString))
+                        {
+                            _jsApiTicket = JsonConvert.DeserializeObject<JsApiTicket>(jsonString);
+                        }
+                    }
+                }
+
+                return _jsApiTicket;
+            }
+        }
+
+        public async void GetJsSdkSignature()
+        {
+
+        }
+
+        /// <summary>
+        /// Try to catch error from api of WeChat
+        /// </summary>
+        /// <param name="jsonString"></param>
+        /// <returns></returns>
         private bool TryCatchError(string jsonString)
         {
             try

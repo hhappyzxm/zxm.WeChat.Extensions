@@ -108,6 +108,7 @@ namespace zxm.WeChat.Extensions
 
         /// <summary>
         /// Try to catch error from api of WeChat
+        /// Example: {"errcode":40013,"errmsg":"invalid appid"}
         /// </summary>
         /// <param name="jsonString"></param>
         /// <returns></returns>

@@ -18,6 +18,12 @@ namespace zxm.WeChat.Extensions.Models
     /// </summary>
     public class JsApiTicket
     {
+        /// <summary>
+        /// Constructor of JsApiTicket
+        /// </summary>
+        /// <param name="ticket"></param>
+        /// <param name="expiresIn"></param>
+        [JsonConstructor]
         public JsApiTicket(string ticket, int expiresIn)
         {
             if (string.IsNullOrEmpty(ticket))

@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using zxm.WeChat.Extensions.Models;
 using zxm.AsyncLock;
 
@@ -51,7 +52,7 @@ namespace zxm.WeChat.Extensions
         /// Get access token
         /// </summary>
         /// <returns></returns>
-        public async Task<AccessToken>  GetAccessToken()
+        public async Task<string>  GetAccessToken()
         {
             using (var releaser = await _accessTokenLock.LockAsync())
             {
@@ -69,7 +70,7 @@ namespace zxm.WeChat.Extensions
                     }
                 }
 
-                return _accessToken;
+                return _accessToken.Token;
             }
         }
 
@@ -77,7 +78,7 @@ namespace zxm.WeChat.Extensions
         /// Get JsApiTicket
         /// </summary>
         /// <returns></returns>
-        public async Task<JsApiTicket> GetJsApiTicket()
+        public async Task<string> GetJsApiTicket()
         {
             using (var releaser = await _jsApiTicketLock.LockAsync())
             {
@@ -85,8 +86,8 @@ namespace zxm.WeChat.Extensions
                 {
                     using (var httpClient = new HttpClient())
                     {
-                        
-                        var url = $"https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={GetAccessToken()}&type=jsapi";
+                        var token = await GetAccessToken();
+                        var url = $"https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={token}&type=jsapi";
                         var jsonString = await httpClient.GetStringAsync(url);
 
                         if (!TryCatchError(jsonString))
@@ -96,7 +97,7 @@ namespace zxm.WeChat.Extensions
                     }
                 }
 
-                return _jsApiTicket;
+                return _jsApiTicket.Ticket;
             }
         }
 
@@ -112,15 +113,27 @@ namespace zxm.WeChat.Extensions
         /// <returns></returns>
         private bool TryCatchError(string jsonString)
         {
-            try
+            var err = JObject.Parse(jsonString);
+            JToken codeJToken;
+            if (err.TryGetValue("errcode", out codeJToken))
             {
-                var err = JsonConvert.DeserializeObject<ErrorResult>(jsonString);
-                throw new ApiException($"{err.Code}-{err.Message}");
+                if (codeJToken.ToObject<string>() == "0")
+                {
+                    return false;
+                }
+
+                JToken messageJToken;
+                if (err.TryGetValue("errmsg", out messageJToken))
+                {
+                    throw new ApiException($"{codeJToken}-{messageJToken}");
+                }
+                else
+                {
+                    throw new ApiException($"Parse invalid - {jsonString}");
+                }
             }
-            catch (ArgumentNullException)
-            {
-                return false;
-            }
+
+            return false;
         }
     }
 }

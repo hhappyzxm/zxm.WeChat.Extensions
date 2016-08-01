@@ -11,7 +11,7 @@ namespace zxm.WeChat.Extensions
     /// <summary>
     /// Api of WeChat
     /// </summary>
-    public class ApiHelper
+    public class ApiHelper : IApiHelper
     {
         private readonly Locker _accessTokenLock = new Locker();
         private readonly Locker _jsApiTicketLock = new Locker();
@@ -75,7 +75,7 @@ namespace zxm.WeChat.Extensions
         }
 
         /// <summary>
-        /// Get JsApiTicket
+        /// Get js api ticket
         /// </summary>
         /// <returns></returns>
         public async Task<string> GetJsApiTicket()
@@ -101,9 +101,15 @@ namespace zxm.WeChat.Extensions
             }
         }
 
-        public async void GetJsSdkSignature()
+        /// <summary>
+        /// Get js sdk signature
+        /// </summary>
+        /// <param name="currentPageUrl"></param>
+        /// <returns></returns>
+        public async Task<JsSdkSignature> GetJsSdkSignature(string currentPageUrl)
         {
-
+            var ticket = await GetJsApiTicket();
+            return new JsSdkSignature(ticket, currentPageUrl);
         }
 
         /// <summary>

@@ -28,5 +28,12 @@ namespace zxm.WeChat.Extensions.Tests
             var apiHelper = new ApiHelper(_appId, _secret);
             await apiHelper.GetJsApiTicket();
         }
+
+        [Fact]
+        public async Task TestGetJsSdkSignature()
+        {
+            var apiHelper = new ApiHelper(_appId, _secret);
+            var signature = await apiHelper.GetJsSdkSignature("http://www.webezi.com.au");
+        }
     }
 }

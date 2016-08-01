@@ -1,5 +1,19 @@
 ﻿{
   "version": "1.0.0",
+  "authors": [ "zxm" ],
+  "description": "zxm.WeChat.Extensions is an extensions for WeChat.",
+  "title": "zxm.WeChat.Extensions",
+  "copyright": "2016 © zxm",
+  "packOptions": {
+    "owners": [ "zxm" ],
+    "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0",
+    "projectUrl": "https://github.com/hhappyzxm/zxm.WeChat.Extensions",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/hhappyzxm/zxm.WeChat.Extensions"
+    },
+    "tags": [ "WeChat" ]
+  },
 
   "dependencies": {
     "Newtonsoft.Json": "9.0.1",
@@ -10,7 +24,7 @@
     "netstandard1.3": {
       "dependencies": {
         "System.Runtime": "4.1.0",
-        "System.Threading": "4.0.11", 
+        "System.Threading": "4.0.11",
         "System.Threading.Tasks": "4.0.11",
         "System.Net.Http": "4.1.0"
       }
@@ -19,6 +33,6 @@
       "dependencies": {
         "Microsoft.Net.Http": "2.2.22"
       }
-    } 
+    }
   }
 }

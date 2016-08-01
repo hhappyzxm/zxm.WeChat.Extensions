@@ -11,7 +11,7 @@ namespace zxm.WeChat.Extensions
     /// <summary>
     /// Api of WeChat
     /// </summary>
-    public class ApiHelper : IApiHelper
+    public class WeChatApiHelper : IWeChatApiHelper
     {
         private readonly Locker _accessTokenLock = new Locker();
         private readonly Locker _jsApiTicketLock = new Locker();
@@ -22,7 +22,7 @@ namespace zxm.WeChat.Extensions
         /// <summary>
         /// Constructor of ApiHelper
         /// </summary>
-        public ApiHelper(string appId, string appSecret)
+        public WeChatApiHelper(string appId, string appSecret)
         {
             if (string.IsNullOrEmpty(appId))
             {
@@ -109,7 +109,7 @@ namespace zxm.WeChat.Extensions
         public async Task<JsSdkSignature> GetJsSdkSignature(string currentPageUrl)
         {
             var ticket = await GetJsApiTicket();
-            return new JsSdkSignature(ticket, currentPageUrl);
+            return new JsSdkSignature(AppId, ticket, currentPageUrl);
         }
 
         /// <summary>
@@ -132,11 +132,11 @@ namespace zxm.WeChat.Extensions
                 JToken messageJToken;
                 if (err.TryGetValue("errmsg", out messageJToken))
                 {
-                    throw new ApiException($"{codeJToken}-{messageJToken}");
+                    throw new WeChatApiException($"{codeJToken}-{messageJToken}");
                 }
                 else
                 {
-                    throw new ApiException($"Parse invalid - {jsonString}");
+                    throw new WeChatApiException($"Parse invalid - {jsonString}");
                 }
             }
 

@@ -12,21 +12,33 @@ namespace zxm.WeChat.Extensions.Models
         /// <summary>
         /// Constructor of JsSdkSignature
         /// </summary>
+        /// <param name="appId"></param>
         /// <param name="jsApiTicket"></param>
         /// <param name="currentPageUrl"></param>
-        public JsSdkSignature(string jsApiTicket, string currentPageUrl)
+        public JsSdkSignature(string appId, string jsApiTicket, string currentPageUrl)
         {
+            if (string.IsNullOrEmpty(appId))
+            {
+                throw new ArgumentNullException(nameof(appId));
+            }
+
             if (string.IsNullOrEmpty(jsApiTicket))
             {
                 throw new ArgumentNullException(nameof(jsApiTicket));
             }
 
+            AppId = appId;
             NonceStr = Guid.NewGuid().ToString().Replace("-", "");
             JsApiTicket = jsApiTicket;
             CurrentPageUrl = currentPageUrl;
             TimeStamp = GetCurrentTimeSpan();
             Signature = Sha1($"jsapi_ticket={JsApiTicket}&noncestr={NonceStr}&timestamp={TimeStamp}&url={CurrentPageUrl}");
         }
+
+        /// <summary>
+        /// Random string
+        /// </summary>
+        public string AppId { get; }
 
         /// <summary>
         /// Random string

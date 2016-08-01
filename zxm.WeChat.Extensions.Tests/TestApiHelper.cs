@@ -15,24 +15,24 @@ namespace zxm.WeChat.Extensions.Tests
         [Fact]
         public async Task TestGetAccessToken()
         {
-            var apiHelper = new ApiHelper(_appId, _secret);
+            var apiHelper = new WeChatApiHelper(_appId, _secret);
             await apiHelper.GetAccessToken();
 
-            apiHelper = new ApiHelper(_appId, "1111");
-            await Assert.ThrowsAsync<ApiException>(async () => await apiHelper.GetAccessToken());
+            apiHelper = new WeChatApiHelper(_appId, "1111");
+            await Assert.ThrowsAsync<WeChatApiException>(async () => await apiHelper.GetAccessToken());
         }
 
         [Fact]
         public async Task TestGetJsApiTicket()
         {
-            var apiHelper = new ApiHelper(_appId, _secret);
+            var apiHelper = new WeChatApiHelper(_appId, _secret);
             await apiHelper.GetJsApiTicket();
         }
 
         [Fact]
         public async Task TestGetJsSdkSignature()
         {
-            var apiHelper = new ApiHelper(_appId, _secret);
+            var apiHelper = new WeChatApiHelper(_appId, _secret);
             var signature = await apiHelper.GetJsSdkSignature("http://www.webezi.com.au");
         }
     }

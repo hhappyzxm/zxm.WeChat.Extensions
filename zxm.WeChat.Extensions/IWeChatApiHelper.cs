@@ -6,7 +6,7 @@ namespace zxm.WeChat.Extensions
     /// <summary>
     /// ApiHelper interface
     /// </summary>
-    public interface IApiHelper
+    public interface IWeChatApiHelper
     {
         /// <summary>
         /// Get access token

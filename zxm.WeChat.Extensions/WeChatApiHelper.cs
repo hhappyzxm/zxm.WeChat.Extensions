@@ -18,11 +18,12 @@ namespace zxm.WeChat.Extensions
         private AccessToken _accessToken;
         private JsApiTicket _jsApiTicket;
 
+        private static Lazy<WeChatApiHelper> _instance;
 
         /// <summary>
         /// Constructor of ApiHelper
         /// </summary>
-        public WeChatApiHelper(string appId, string appSecret)
+        private WeChatApiHelper(string appId, string appSecret)
         {
             if (string.IsNullOrEmpty(appId))
             {
@@ -39,6 +40,36 @@ namespace zxm.WeChat.Extensions
         }
 
         /// <summary>
+        /// Init Lazy instance
+        /// </summary>
+        /// <param name="appId"></param>
+        /// <param name="appSecret"></param>
+        public static void Register(string appId, string appSecret)
+        {
+            if (_instance != null)
+            {
+                throw new Exception("Instance has been generated. Please call method WeChatApiHelper.Instance for using");
+            }
+
+            _instance = new Lazy<WeChatApiHelper>(() => new WeChatApiHelper(appId, appSecret));
+        }
+
+        /// <summary>
+        /// Return instance has been built.
+        /// </summary>
+        public static WeChatApiHelper Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    throw new Exception("Please call method WeChatApiHelper.Register first.");
+                }
+                return _instance.Value;
+            }
+        }
+
+        /// <summary>
         /// AppId of WeChat
         /// </summary>
         public string AppId { get; }
@@ -52,7 +83,7 @@ namespace zxm.WeChat.Extensions
         /// Get access token
         /// </summary>
         /// <returns></returns>
-        public async Task<string>  GetAccessToken()
+        public async Task<string> GetAccessToken()
         {
             using (var releaser = await _accessTokenLock.LockAsync())
             {

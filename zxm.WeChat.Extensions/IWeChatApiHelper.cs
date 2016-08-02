@@ -9,6 +9,16 @@ namespace zxm.WeChat.Extensions
     public interface IWeChatApiHelper
     {
         /// <summary>
+        /// AppId of WeChat
+        /// </summary>
+        string AppId { get; }
+
+        /// <summary>
+        /// Secret of WeChat
+        /// </summary>
+        string AppSecret { get; }
+
+        /// <summary>
         /// Get access token
         /// </summary>
         /// <returns></returns>

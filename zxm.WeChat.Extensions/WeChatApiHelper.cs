@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -129,6 +131,22 @@ namespace zxm.WeChat.Extensions
                 }
 
                 return _jsApiTicket.Ticket;
+            }
+        }
+
+        /// <summary>
+        /// Download picture from weixin with media id
+        /// </summary>
+        /// <param name="mediaId"></param>
+        /// <returns></returns>
+        public async Task<Stream> DownloadPicture(string mediaId)
+        {
+            var accessToken = await GetAccessToken();
+
+            using (var httpClient = new HttpClient())
+            {
+                var url = $"http://file.api.weixin.qq.com/cgi-bin/media/get?access_token={accessToken}&media_id={mediaId}";
+                return await httpClient.GetStreamAsync(url);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Threading.Tasks;
 using zxm.WeChat.Extensions.Models;
 
 namespace zxm.WeChat.Extensions
@@ -29,6 +30,13 @@ namespace zxm.WeChat.Extensions
         /// </summary>
         /// <returns></returns>
         Task<string> GetJsApiTicket();
+
+        /// <summary>
+        /// Download picture from weixin with media id
+        /// </summary>
+        /// <param name="mediaId"></param>
+        /// <returns></returns>
+        Task<Stream> DownloadPicture(string mediaId);
 
         /// <summary>
         /// Get js sdk signature

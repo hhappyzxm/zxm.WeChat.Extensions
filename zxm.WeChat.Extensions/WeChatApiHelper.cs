@@ -139,14 +139,14 @@ namespace zxm.WeChat.Extensions
         /// </summary>
         /// <param name="mediaId"></param>
         /// <returns></returns>
-        public async Task<Stream> DownloadPicture(string mediaId)
+        public async Task<byte[]> DownloadPicture(string mediaId)
         {
             var accessToken = await GetAccessToken();
 
             using (var httpClient = new HttpClient())
             {
                 var url = $"http://file.api.weixin.qq.com/cgi-bin/media/get?access_token={accessToken}&media_id={mediaId}";
-                return await httpClient.GetStreamAsync(url);
+                return await httpClient.GetByteArrayAsync(url);
             }
         }
 

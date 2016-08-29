@@ -36,7 +36,7 @@ namespace zxm.WeChat.Extensions
         /// </summary>
         /// <param name="mediaId"></param>
         /// <returns></returns>
-        Task<Stream> DownloadPicture(string mediaId);
+        Task<byte[]> DownloadPicture(string mediaId);
 
         /// <summary>
         /// Get js sdk signature
